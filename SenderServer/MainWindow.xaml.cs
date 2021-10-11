@@ -120,7 +120,7 @@ namespace SenderServer
                 {
                     int index = 0;
                     doesNotworkForAMinute = true;
-                    while(index < 1)
+                    while(index < 12)
                     {
                         
                         try
