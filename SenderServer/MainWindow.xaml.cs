@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;
 
 namespace SenderServer
 {
@@ -36,23 +37,33 @@ namespace SenderServer
 
         private string FailureStatus = "x";
 
-        private string hostname;
+      
+
+        private List<string> resources = new List<string> 
+        {
+        "google.com",
+        "nonexistent.nz"
+        
+        };
 
         public object UpdClient { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            
+            foreach(string resources in resources)
+            {
+                ResourceInput.Items.Add(resources);
+            }
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             /*currentResource = GetIpAddress();*/
-            hostname = GetHostname();
-            if (hostname!=null)
+           
+            if (GetHostname()!=null)
             {
-                StartButton.IsEnabled = false;
+            
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += Worker_DoWork;
                 worker.ProgressChanged += Worker_ProgressChanged;
@@ -69,7 +80,7 @@ namespace SenderServer
         }
 
 
-        private void BroadcastToClients()
+        private void BroadcastToClients(string hostname)
         {
 
             int port = 5001;
@@ -99,6 +110,7 @@ namespace SenderServer
    
             Ping ping = new Ping();
             bool doesNotworkForAMinute = false;
+            string hostname = ResourceInput.Dispatcher.Invoke(() => ResourceInput.Text);
            
        
             while(true)
@@ -110,7 +122,7 @@ namespace SenderServer
 
 
 
-                    presentations.Add(new StatusPresentation { Status = SuccessStatus });
+                    presentations.Add(new StatusPresentation { Status = SuccessStatus, Resource = hostname });
                     AccessibilityList.Dispatcher.Invoke(() => AccessibilityList.Items.Add(presentations.Last()));
                     Thread.Sleep(5000);
                 }
@@ -133,7 +145,7 @@ namespace SenderServer
                         }
                         catch(Exception)
                         {
-                            presentations.Add(new StatusPresentation { Status = FailureStatus });
+                            presentations.Add(new StatusPresentation { Status = FailureStatus, Resource = hostname });
                             AccessibilityList.Dispatcher.Invoke(() => AccessibilityList.Items.Add(presentations.Last()));
 
                             index++;
@@ -152,7 +164,7 @@ namespace SenderServer
                 if(doesNotworkForAMinute)
                 {
                     LogService.CreateLog(presentations.Last(), hostname);
-                    BroadcastToClients();
+                    BroadcastToClients(hostname);
                    
 
                 }
@@ -171,7 +183,7 @@ namespace SenderServer
             }
             catch (Exception)
             {
-                MessageBox.Show(invalidIPAddressMessage);
+                
                 return null;
                 
             }

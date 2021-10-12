@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SenderServer"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="SenderServer" Height="450" Width="800"
         ResizeMode="NoResize"
@@ -18,7 +18,10 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="ResourceInput" Grid.Row="0" Margin="52,41,562,40"></TextBox>
+      
+        <ComboBox x:Name="ResourceInput" Grid.Row="0" Margin="52,41,562,40" IsEditable="True">
+            
+        </ComboBox>
         <Button Name="StartButton" Grid.Row="0" Margin="261,41,430,40" Click="StartButton_Click">
             Start
         </Button>
